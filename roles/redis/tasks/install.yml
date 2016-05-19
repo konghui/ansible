@@ -1,0 +1,37 @@
+---
+- name: copy redis tar file to the target server
+  copy: src=redis-{{ redis_version }}.tar.gz dest={{ program_dir }}/redis-{{ redis_version }}.tar.gz
+
+- name: uncompress
+  unarchive: src={{ program_dir }}/redis-{{ redis_version }}.tar.gz dest={{ program_dir }} copy=no
+
+- name: compile
+  command: chdir={{ program_dir }}/redis-{{ redis_version }} make
+
+- name: make sure redis dir
+  file: path={{ item }} state=directory
+  with_items:
+    - "{{ program_dir }}/redis/bin"
+    - "{{ opt_log_dir }}/redis"
+
+- name: stop redis
+  service: name=redis state=stopped enabled=no
+
+- name: copy programe
+  command: cp {{ program_dir }}/redis-{{ redis_version }}/src/{{ item }} {{ program_dir }}/redis/bin 
+  with_items:
+    - redis-benchmark
+    - redis-check-aof
+    - redis-check-dump
+    - redis-cli
+    - redis-sentinel
+    - redis-server
+    - redis-trib.rb
+
+- name: delete file
+  file: path={{ program_dir}}/{{ item }} state=absent
+  with_items:
+    - redis-{{ redis_version }}.tar.gz
+    - redis-{{ redis_version }}
+
+

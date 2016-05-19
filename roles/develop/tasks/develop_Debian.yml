@@ -1,0 +1,8 @@
+---
+- name: install develop tools(Debian)
+  apt: name={{ item }} state=present
+  with_items:
+    - gcc
+    - make
+    - git
+  when: ansible_os_family == "Debian"

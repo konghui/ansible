@@ -1,0 +1,110 @@
+#!/bin/bash
+#redis init scripts
+#!/bin/bash
+#
+# redis		Start up the redis cluster
+#
+# chkconfig: 2345 99 1
+# description: redis cluster
+
+. /etc/rc.d/init.d/functions
+
+REDIS_ROOT={{ program_dir }}/redis
+
+function start() {
+	echo -e "start redis with port:"
+	for port in {{ '{' }}{{ redis_from_port }}..{{ redis_to_port }}{{ '}' }}
+	do
+		start_redis $port || (echo -e "start $port faild\n";exit 1)
+	done
+	echo -e "\n"
+	echo_success
+}
+
+function init_redis() {
+	mkdir redis_$port
+	cd redis_$port
+	cp $REDIS_ROOT/bin/redis.conf ./redis_$port.conf
+	sed -i -e "s#6379#${port}#g" -e "s#cluster-config-file .*#cluster-config-file nodes_${port}#g" -e "s#^pidfile.*#pidfile ${REDIS_ROOT}/redis_${port}/redis.pid#g" -e "s#^logfile.*#logfile {{ opt_log_dir }}/redis/redis_${port}.log#g" ./redis_$port.conf
+	cd ..
+}
+
+function start_redis() {
+	cd $REDIS_ROOT
+	if [ ! -e redis_$1 ]
+	then
+		init_redis $1
+	fi
+	cd redis_$1
+	$REDIS_ROOT/bin/redis-server ./redis_$port.conf
+	rv=$?
+	echo $!>redis.pid
+	cd ..
+	return $rv
+}
+
+function stop() {
+	cd $REDIS_ROOT
+	echo -e "stop redis with port:"
+	for port in {{ '{' }}{{ redis_from_port }}..{{ redis_to_port }}{{ '}' }}
+	do
+		stop_redis $port
+	done
+	echo -e "\n"
+	echo_success
+}
+
+function stop_redis() {
+	cd redis_$1
+	killproc -p redis.pid redis||echo "stop $port faild"
+	cd ..
+}
+
+function my_status() {
+	cd $REDIS_ROOT
+	rv=0
+	echo "check the redis status"
+	for port in {{ '{' }}{{ redis_from_port }}..{{ redis_to_port }}{{ '}' }}
+	do
+		status -p redis_${port}/redis.pid  redis||exit $?
+		echo "$port"
+	done
+	echo -e "\n"
+	echo_success
+	exit 0
+}
+
+function reload() {
+	stop
+	for port in {{ '{' }}{{ redis_from_port }}..{{ redis_to_port }}{{ '}' }}
+	do
+		init_redis $port
+	done
+        start
+
+}
+
+
+case $1 in 
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		start
+		;;
+	status)
+		my_status
+		;;
+	reload)
+		reload
+		;;
+	*)
+		echo "unknown operate"
+		exit 1
+esac
+exit 0
+

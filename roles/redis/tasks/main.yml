@@ -1,0 +1,17 @@
+---
+- include: install.yml
+  when: action == "install"
+
+- name: install init script
+  template: src=redis.init.j2 dest=/etc/init.d/redis mode=0755
+
+- name: add chkconfig
+  command: chkconfig --add redis
+
+- name: install redis config
+  template: src=redis.conf.j2 dest={{ program_dir }}/redis/bin/redis.conf mode=0644
+  notify: reload redis
+
+- name: redis service state
+  service: name=redis state=started enabled=no
+

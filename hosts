@@ -1,0 +1,4 @@
+[test]
+192.168.122.26 ansible_ssh_user=root ansible_ssh_pass=000000 ansible_connection=paramiko 
+[redis]
+192.168.122.26 ansible_ssh_user=root ansible_ssh_pass=000000 ansible_connection=paramiko

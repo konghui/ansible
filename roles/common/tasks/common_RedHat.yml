@@ -1,0 +1,3 @@
+---
+- name: Copy the youku repo definition
+  copy: src=youku.repo dest=/etc/yum.repos.d/youku.repo

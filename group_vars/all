@@ -1,0 +1,16 @@
+---
+# Variables here are applicable to all host groups
+
+program_dir: "/opt/youku"
+opbin_dir:   "/opt/opbin"
+opdir_dir:   "/opt/opdir"
+opt_log_dir: "/opt/log"
+
+deploy_user: "root"
+deploy_group: "root"
+
+# redis 
+redis_version: 3.0.7
+redis_service_name: redis
+redis_from_port: 7000
+redis_to_port: 7005

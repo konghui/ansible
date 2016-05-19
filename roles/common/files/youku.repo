@@ -1,0 +1,48 @@
+# Youku-Base.repo
+#
+# The mirror system uses the connecting IP address of the client and the
+# update status of each mirror to pick mirrors that are updated to and
+# geographically close to the client.  You should use this for Youku updates
+# unless you are manually picking other mirrors.
+#
+# If the mirrorlist= does not work for you, as a fall back you can try the 
+# remarked out baseurl= line instead.
+#
+#
+
+[base]
+name=Youku-$releasever - Base
+baseurl=http://10.103.11.47/yum/centos/$releasever/os/$basearch/
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Youku-6
+
+#released updates 
+[updates]
+name=Youku-$releasever - Updates
+baseurl=http://10.103.11.47/yum/centos/$releasever/updates/$basearch/
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Youku-6
+
+#additional packages that may be useful
+[extras]
+name=Youku-$releasever - Extras
+baseurl=http://10.103.11.47/yum/centos/$releasever/extras/$basearch/
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Youku-6
+
+#additional packages that extend functionality of existing packages
+[centosplus]
+name=Youku-$releasever - Plus
+baseurl=http://10.103.11.47/yum/centos/$releasever/centosplus/$basearch/
+gpgcheck=0
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Youku-6
+
+#contrib - packages by Centos Users
+[contrib]
+name=Youku-$releasever - Contrib
+baseurl=http://10.103.11.47/yum/centos/$releasever/contrib/$basearch/
+gpgcheck=0
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Youku-6
+

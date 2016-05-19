@@ -1,0 +1,13 @@
+---
+- name: make sure base env
+  file: path={{ item.dir }} owner={{ deploy_user }} group={{ deploy_group }} state=directory
+  with_items:
+    - { dir: "{{ program_dir }}" }
+    - { dir: "{{ opbin_dir }}" }
+    - { dir: "{{ opdir_dir }}" }
+    - { dir: "{{ opt_log_dir }}" }
+
+- include: common_{{ ansible_os_family }}.yml
+- name: Copy the youku repo definition
+  copy: src=youku.repo dest=/etc/yum.repos.d/youku.repo
+

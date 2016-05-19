@@ -1,0 +1,7 @@
+--- 
+- hosts: redis
+  user: root
+  roles:
+    - { role: common }
+    - { role: develop }
+    - { role: redis, action: install }
